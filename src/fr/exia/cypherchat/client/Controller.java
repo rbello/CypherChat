@@ -1,5 +1,9 @@
 package fr.exia.cypherchat.client;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 public class Controller implements ModelListener, ViewListener {
 
 	private Model model;
@@ -23,6 +27,14 @@ public class Controller implements ModelListener, ViewListener {
 	public void onMessageSent(String message) {
 		// TODO Auto-generated method stub
 		System.out.println("On envoie le message " + message);
+		
+		// TODO Code de test, à supprimer !
+		try {
+			Socket sock = new Socket("localhost", 500);
+		}
+		catch (Exception e) {
+			System.err.println("[Client] Impossible de se connecter");
+		}
 	}
 
 	@Override

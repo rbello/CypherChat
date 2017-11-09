@@ -1,21 +1,29 @@
 package fr.exia.cypherchat;
 
 import java.awt.EventQueue;
+import java.io.IOException;
 
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import fr.exia.cypherchat.client.ClientWindow;
 import fr.exia.cypherchat.client.Controller;
 import fr.exia.cypherchat.client.Model;
+import fr.exia.cypherchat.server.Server;
 
 public class Main {
 
 	/**
 	 * Launch the application.
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args)
+			throws IOException {
 		
+		// Lancement du serveur
+		Server srv = new Server(500);
+		srv.start();
+		
+		// Lancement du client
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
@@ -24,16 +32,16 @@ public class Main {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception e) { }
 				
-				// Créer la fenêtre
+				// CrÃ©er la fenÃªtre
 				ClientWindow view = new ClientWindow();
 				
-				// Créer le modèle
+				// CrÃ©er le modÃ¨le
 				Model model = new Model();
 				
-				// Créer le controller
+				// CrÃ©er le controller
 				Controller ctrl = new Controller(model, view);
 				
-				// Afficher la fenêtre
+				// Afficher la fenÃªtre
 				view.setVisible(true);
 			}
 		});
