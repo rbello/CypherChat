@@ -40,7 +40,8 @@ public class Controller implements ModelListener, ViewListener {
 			// Réceptionner le prochain message
 			BufferedReader in = new BufferedReader(
 		            new InputStreamReader(sock.getInputStream()));
-			out.println(message);
+			out.println("NCK;JeanJean");
+			out.println("MSG;" + message);
 			String rcvd = in.readLine();
 			System.out.println("[Client] Message received: " + rcvd);
 			// Fermeture

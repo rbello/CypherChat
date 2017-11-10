@@ -76,12 +76,34 @@ public class Server implements Runnable {
 		}
 	}
 
-	public void onClientMessage(Client client, String message) {
+	public void onClientRawDataReceived(Client client, String message) {
 		// Log
 		System.out.println("[Server][" + client.getSocket().getInetAddress()
-			+ "] Received message: " + message);
-		// Propager le message à tous les clients
-		broadcastMessage(client, message);
+			+ "] Received data: " + message);
+		
+		if (message.length() < 3) {
+			System.err.println("[Server] Invalid RAW data");
+			return;
+		}
+		
+		String opcode = message.substring(0, 4);
+		
+		switch (opcode) {
+		case "MSG;" :
+			// Propager le message à tous les clients
+			broadcastMessage(client, message.substring(4));
+			break;
+		case "NCK;" :
+			// Changer le nickname du client
+			client.setNickname(message.substring(4));
+			// TODO A supprimer
+			System.out.println("Nickname changed: " + client.getNickname());
+			break;
+		default :
+			System.err.println("[Server] Invalid OPCODE : " + opcode);
+			return;
+		}
+		
 	}
 
 	public void broadcastMessage(Client client, String message) {

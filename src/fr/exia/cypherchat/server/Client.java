@@ -60,8 +60,8 @@ public class Client implements Runnable {
 					return;
 				}
 				
-				// On prévient la classe Server pour broadcast
-				parent.onClientMessage(this, message);
+				// On prévient la classe Server
+				parent.onClientRawDataReceived(this, message);
 			}
 			catch (IOException e) {
 				System.err.println("[Server][" + socket.getInetAddress()
@@ -98,6 +98,10 @@ public class Client implements Runnable {
 
 	public String getNickname() {
 		return this.nickname ;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 }
