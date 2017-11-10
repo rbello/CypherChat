@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class Client implements Runnable {
 
@@ -14,6 +13,7 @@ public class Client implements Runnable {
 	private PrintWriter out;
 	private BufferedReader in;
 	private Thread thread;
+	private String nickname = "anonymous";
 
 	public Client(Server parent, Socket socket) throws IOException {
 		// Je mémorise le socket et le seveur parent
@@ -62,8 +62,6 @@ public class Client implements Runnable {
 				
 				// On prévient la classe Server pour broadcast
 				parent.onClientMessage(this, message);
-				// TODO Temporaire
-				write("ECHO -> " + message);
 			}
 			catch (IOException e) {
 				System.err.println("[Server][" + socket.getInetAddress()
@@ -96,6 +94,10 @@ public class Client implements Runnable {
 		catch (Exception ex) {
 			return false;
 		}
+	}
+
+	public String getNickname() {
+		return this.nickname ;
 	}
 
 }

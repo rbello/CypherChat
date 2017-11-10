@@ -55,7 +55,9 @@ public class Server implements Runnable {
 				c.startPollingThread();
 				// Je sauvegarde mon client maintenant qu'il est
 				// bien initialisé.
-				this.connectedClients.add(c);
+				synchronized (this.connectedClients) {
+					this.connectedClients.add(c);
+				}
 			}
 			catch (IOException e) {
 				System.err.println("[Server] Client initialization error");
@@ -68,16 +70,47 @@ public class Server implements Runnable {
 		// Log
 		System.out.println("[Server][" + client.getSocket().getInetAddress()
 			+ "] Client has just been disconnected");
+		// Retirer le client de la liste des clients connectés
+		synchronized (this.connectedClients) {
+			this.connectedClients.remove(client);
+		}
 	}
 
 	public void onClientMessage(Client client, String message) {
 		// Log
 		System.out.println("[Server][" + client.getSocket().getInetAddress()
 			+ "] Received message: " + message);
+		// Propager le message à tous les clients
+		broadcastMessage(client, message);
 	}
-	
-	
-	
-	
+
+	public void broadcastMessage(Client client, String message) {
+		// Protocole
+		String data = "MSG;";
+		data += client.getNickname();
+		data += ";";
+		data += (long)(System.currentTimeMillis() / 1000);
+		data += ";";
+		data += client.getSocket().getInetAddress();
+		data += ";";
+		data += message;
+		// Broadcast
+		broadcast(data);
+	}
+
+	public void broadcast(String message) {
+		
+		// On effectue une copie de la liste
+		ArrayList<Client> copy;
+		synchronized (this.connectedClients) {
+			 copy = new ArrayList<>(this.connectedClients);
+		}
+		
+		// On parcours l'ensemble des clients
+		for (Client client : copy) {
+			// Et on leur envoie le message
+			client.write(message);
+		}
+	}
 	
 }
