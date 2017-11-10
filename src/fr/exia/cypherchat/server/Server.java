@@ -49,14 +49,35 @@ public class Server implements Runnable {
 				System.out.println("[Server] Connection received from "
 						+ s.getInetAddress());
 				// Créer un objet pour réprésenter le client
-				Client c = new Client(s);
+				Client c = new Client(this, s);
+				// On lance le thread qui se charge de lire les
+				// données qui arrivent sur le socket.
+				c.startPollingThread();
+				// Je sauvegarde mon client maintenant qu'il est
+				// bien initialisé.
 				this.connectedClients.add(c);
 			}
 			catch (IOException e) {
-				System.out.println("[Server] Accept error");
+				System.err.println("[Server] Client initialization error");
 				e.printStackTrace();
 			}
 		}
 	}
+
+	public void onClientDisconnected(Client client) {
+		// Log
+		System.out.println("[Server][" + client.getSocket().getInetAddress()
+			+ "] Client has just been disconnected");
+	}
+
+	public void onClientMessage(Client client, String message) {
+		// Log
+		System.out.println("[Server][" + client.getSocket().getInetAddress()
+			+ "] Received message: " + message);
+	}
+	
+	
+	
+	
 	
 }

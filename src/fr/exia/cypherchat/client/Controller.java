@@ -1,6 +1,9 @@
 package fr.exia.cypherchat.client;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -30,7 +33,21 @@ public class Controller implements ModelListener, ViewListener {
 		
 		// TODO Code de test, à supprimer !
 		try {
+			// Ouverture de la connexion au serveur
 			Socket sock = new Socket("localhost", 500);
+			// Envoi du message
+			PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+			// Réceptionner le prochain message
+			BufferedReader in = new BufferedReader(
+		            new InputStreamReader(sock.getInputStream()));
+			out.println(message);
+			String rcvd = in.readLine();
+			System.out.println("[Client] Message received: " + rcvd);
+			// Fermeture
+			Thread.sleep(3000);
+			out.close();
+			sock.close();
+			System.out.println("[Client] Fermeture");
 		}
 		catch (Exception e) {
 			System.err.println("[Client] Impossible de se connecter");
